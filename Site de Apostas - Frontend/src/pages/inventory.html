@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Meu inventario</title>
+        <meta charset="utf-8">
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+        <div class="form-id64">
+            <input type="text" id="id64" name="id64">
+            <button onclick="show()">procurar</button>
+        </div>
+        <main>
+
+        </main>
+    <script>
+        async function pricee(hash_name) {
+            axios.post('http://localhost:8000/price', {item: hash_name})
+                .then(function(response){
+                    return (response.data.current_price)
+                })
+                .catch(function(error){
+                    console.log(error);
+                });
+        }
+        async function show() {
+            id64 = document.getElementById('id64');
+            axios.get('https://cors-anywhere.herokuapp.com/https://steamcommunity.com/profiles/'+ id64.value + '/inventory/json/730/2/')
+                .then(function(response){
+                    const dados = response.data.rgDescriptions;
+                    console.log(dados);
+                    let main = document.querySelector("main")
+                    for (var dado in dados) {
+                        let div = document.createElement("div");
+                        let p = document.createElement("p");
+                        let img = document.createElement("img");
+                        let price = document.createElement("p");
+                        img.setAttribute("width", "100");
+                        img.setAttribute("height", "100");
+                        img.setAttribute("src", `https://steamcommunity-a.akamaihd.net/economy/image/${dados[dado].icon_url}`);
+                        p.innerText = dados[dado].name;
+                        axios.post('http://localhost:8000/price', {item: dados[dado].market_hash_name})
+                            .then(function(response){
+                                if (response.data.current_price == undefined){
+                                    price.innerText = "Preço indisponivel"
+                                } else {
+                                price.innerText = '$'+response.data.current_price
+                                }
+                             })
+                            .catch(function(error){
+                                console.log(error);
+                            });
+                        div.appendChild(p);
+                        div.appendChild(img);
+                        price.innetText = "teste"
+                        div.appendChild(price);
+                        div.style.backgroundColor = "#a0a0a0"
+                        main.appendChild(div);
+                    }
+                })
+            }
+    </script>
+    </body>
+</html>
+

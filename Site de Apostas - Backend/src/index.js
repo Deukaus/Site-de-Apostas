@@ -13,5 +13,5 @@ app.use(bodyParser.urlencoded({
 app.get('/', (req, res) => {
     res.send('Site de apostas-API V1.0.0');
 });
-
-app.listen(8080, () => console.log('Servidor rodando em http://localhost:8080'));
+require('./app/controllers/index')(app);
+app.listen(8000, () => console.log('Servidor rodando em http://localhost:8080'));
