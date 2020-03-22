@@ -5,12 +5,20 @@ const withdrawSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    classId: {
+        type: Number,
+        required: true
+    },
     price: {
         type: Number,
         required: true
     },
     id64: {
         type: Number,
+        required: true
+    },
+    img: {
+        type: String,
         required: true
     }
 })

@@ -14,20 +14,25 @@
 
         </main>
     <script>
-        async function pricee(hash_name) {
-            axios.post('http://localhost:8000/price', {item: hash_name})
-                .then(function(response){
-                    return (response.data.current_price)
-                })
-                .catch(function(error){
-                    console.log(error);
-                });
+        function postar(id64, classId, name, price, img){
+            axios.post('http://localhost:8000/withdraw/', {
+                id64,
+                classId,
+                name,
+                price,
+                img
+            }).then(function(response){
+                alert('Adicionado a venda');
+                window.location.href = "withdraw.html";
+            }).catch(function(error){
+                console.log(error);
+            });
         }
         async function show() {
             id64 = document.getElementById('id64');
-            axios.get('https://cors-anywhere.herokuapp.com/https://steamcommunity.com/profiles/'+ id64.value + '/inventory/json/730/2/')
+            axios.get('https://cors-anywhere.herokuapp.com/https://steamcommunity.com/inventory/'+ id64.value + '/730/2')
                 .then(function(response){
-                    const dados = response.data.rgDescriptions;
+                    const dados = response.data.descriptions;
                     console.log(dados);
                     let main = document.querySelector("main")
                     for (var dado in dados) {
@@ -39,12 +44,24 @@
                         img.setAttribute("height", "100");
                         img.setAttribute("src", `https://steamcommunity-a.akamaihd.net/economy/image/${dados[dado].icon_url}`);
                         p.innerText = dados[dado].name;
+                        let tradable = dados[dado].tradable
+                        var btnExists = false;
+                        let priceValue = 0
                         axios.post('http://localhost:8000/price', {item: dados[dado].market_hash_name})
                             .then(function(response){
-                                if (response.data.current_price == undefined){
+                                if (tradable == 0) {
+                                    price.innerText = "Não Trocavel"
+                                }
+                                else if (response.data.current_price == undefined){
                                     price.innerText = "Preço indisponivel"
                                 } else {
-                                price.innerText = '$'+response.data.current_price
+                                    price.innerText = '$'+response.data.current_price;
+                                    priceValue = response.data.current_price;
+                                    btnExists = true;
+                                    btn = document.createElement("button");
+                                    btn.innerText = "vender";
+                                    btn.setAttribute("onclick", 'postar(\'' + id64.value + '\',\'' + dados[dado].classid + '\',\'' + dados[dado].market_hash_name + '\',\'' + priceValue + '\',\'' + dados[dado].icon_url +'\')');
+                                    div.appendChild(btn);
                                 }
                              })
                             .catch(function(error){

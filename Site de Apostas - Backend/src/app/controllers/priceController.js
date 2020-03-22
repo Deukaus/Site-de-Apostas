@@ -30,7 +30,6 @@ const History = require('../models/History');
 ////////////////////
 router.post('/', function(req, res) {
 	var query = req.body
-	console.log(query.key);
 	if (query.item === undefined) {
 		res.json({ success: false, error: options.errors.missing_params });
 		return;

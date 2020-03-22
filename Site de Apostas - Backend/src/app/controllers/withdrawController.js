@@ -6,34 +6,46 @@ const itens = require('../models/withdrawModel');
 
 
 router.get('/', async (req, res) => {
-    let name = "AWP%20%7C%20Asiimov%20%28Field-Tested%29";
-    let dados = await itens.findOne({name});
-    let link = `https://steamcommunity.com/market/listings/730/${dados.name}/render?start=0&count=1&currency=3&language=english&format=json`;
     try {
-        return res.send({
-            "link": link,
-            dados
-        })
-        //return res.send(itens)
-    } catch (err) {
-        console.log(err)
-    }
+        await itens.find()
+            .then(function(dados){
+                return res.send({items: dados})
+            })
+        } catch (err) {
+            console.log(err);
+        }
 });
 
-router.post('/add', async (req, res) => {
-    const {price, id64} = req.body;
-    let {name} = req.body;
+router.delete('/:id', async (req, res) => {
+    itens.deleteOne({
+        "_id":req.params.id
+    }, (err, response) => {
+		if(err) {
+            throw err;
+		}
+    });
+    return res.send({
+        concluido: true
+    })
+});
+
+router.post('/', async (req, res) => {
+    let {name, price, id64, classId, img} = req.body;
     try {
         name = encodeURIComponent(name);
         await itens.create({
             name,
             price,
-            id64
+            id64,
+            classId,
+            img
         });
         return res.send({
             name,
             price,
-            id64
+            id64,
+            classId,
+            img
         });
     } catch (err) {
         console.log(err)

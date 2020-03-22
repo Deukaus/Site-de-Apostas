@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Withdraw</title>
+        <meta charset="utf-8">
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+        <main>
+
+        </main>
+    <script>
+        function comprar() {
+            console.log('ok')
+        };
+        axios.get('http://localhost:8000/withdraw')
+            .then(function(response){
+                const dados = response.data.items
+                let main = document.querySelector("main");
+                for (var dado in dados) {
+                    let div = document.createElement("div");
+                    let p = document.createElement("p");
+                    let img = document.createElement("img");
+                    let price = document.createElement("p");
+                    img.setAttribute("width", "100");
+                    img.setAttribute("height", "100");
+                    img.setAttribute("src", `https://steamcommunity-a.akamaihd.net/economy/image/${dados[dado].img}`);
+                    p.innerHTML = decodeURIComponent(dados[dado].name)
+                    price.innerHTML = dados[dado].price
+                    btn = document.createElement("button");
+                    btn.innerText = "comprar";
+                    //btn.setAttribute("onclick", 'postar(\'' + id64.value + '\',\'' + dados[dado].classid + '\',\'' + dados[dado].market_hash_name + '\',\'' + priceValue +'\')');
+                    div.appendChild(p);
+                    div.appendChild(img);
+                    div.appendChild(price);
+                    div.appendChild(btn);
+                    div.style.backgroundColor = "#a0a0a0"
+                    main.appendChild(div);
+                }
+            });
+    </script>
+    </body>
+</html>
+
